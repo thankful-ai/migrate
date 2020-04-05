@@ -1,4 +1,4 @@
-module github.com/egtann/migrate
+module egt.run/pkg/migrate
 
 require (
 	github.com/go-sql-driver/mysql v1.5.0
@@ -6,8 +6,8 @@ require (
 	github.com/lib/pq v1.3.0
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/pkg/errors v0.9.1
-	golang.org/x/crypto v0.0.0-20200208060501-ecb85df21340
-	golang.org/x/sys v0.0.0-20200202164722-d101bd2416d5
+	golang.org/x/crypto v0.0.0-20200403201458-baeed622b8d8
+	golang.org/x/sys v0.0.0-20200331124033-c3d80250170d
 )
 
 go 1.13

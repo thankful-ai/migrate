@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/egtann/migrate"
+	"egt.run/pkg/migrate"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"

@@ -6,10 +6,10 @@ import (
 	"os"
 	"syscall"
 
-	"github.com/egtann/migrate"
-	"github.com/egtann/migrate/mysql"
-	"github.com/egtann/migrate/postgres"
-	"github.com/egtann/migrate/sqlite"
+	"egt.run/pkg/migrate"
+	"egt.run/pkg/migrate/mysql"
+	"egt.run/pkg/migrate/postgres"
+	"egt.run/pkg/migrate/sqlite"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/ssh/terminal"
 )

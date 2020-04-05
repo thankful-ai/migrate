@@ -35,7 +35,7 @@ you forward in history, and consistency can always be reached.
 ## Install
 
 ```
-go get github.com/egtann/migrate/cmd/migrate
+go get egt.run/pkg/migrate/cmd/migrate
 ```
 
 The current version is v1, and the API is stable.

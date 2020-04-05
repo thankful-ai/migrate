@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/egtann/migrate"
+	"egt.run/pkg/migrate"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"

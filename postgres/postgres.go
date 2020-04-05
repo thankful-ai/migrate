@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/egtann/migrate"
+	"egt.run/pkg/migrate"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 
