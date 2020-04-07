@@ -6,10 +6,10 @@ import (
 	"os"
 	"syscall"
 
-	"egt.run/pkg/migrate"
-	"egt.run/pkg/migrate/mysql"
-	"egt.run/pkg/migrate/postgres"
-	"egt.run/pkg/migrate/sqlite"
+	"egt.run/migrate"
+	"egt.run/migrate/mysql"
+	"egt.run/migrate/postgres"
+	"egt.run/migrate/sqlite"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -39,7 +39,7 @@ func run() error {
 	flag.Parse()
 
 	if *version {
-		fmt.Println("v1.0.0rc1")
+		fmt.Println("v1.0.0rc2")
 		return nil
 	}
 

@@ -3,7 +3,7 @@ package sqlite
 import (
 	"database/sql"
 
-	"egt.run/pkg/migrate"
+	"egt.run/migrate"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 

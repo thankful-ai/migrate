@@ -1,4 +1,4 @@
-module egt.run/pkg/migrate
+module egt.run/migrate
 
 require (
 	github.com/go-sql-driver/mysql v1.5.0
