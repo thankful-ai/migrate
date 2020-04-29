@@ -129,7 +129,7 @@ func (m *Migrate) validHistory() error {
 	for i := m.idx; i < len(m.Migrations); i++ {
 		mg := m.Migrations[i]
 		if mg.Filename != m.Files[i].Name() {
-			m.log.Printf("\n%s was added to history before %s.",
+			m.log.Printf("\n%s was added to history before %s.\n",
 				m.Files[i].Name(), mg.Filename)
 			return errors.New("failed to migrate. migrations must be appended")
 		}
