@@ -42,20 +42,33 @@ func New(
 	return db, nil
 }
 
-func (db *DB) CreateMetaVersionIfNotExists() (int, error) {
-	q := `CREATE TABLE IF NOT EXISTS metaversion (
+func (db *DB) CreateMetaVersionIfNotExists(schemaVersion int) (int, error) {
+	created := true
+	q := `CREATE TABLE metaversion (
 		version INTEGER NOT NULL
 	)`
-	if _, err := db.Exec(q); err != nil {
-		return 0, errors.Wrap(err, "create metaversion table")
+	_, err := db.Exec(q)
+	if err != nil {
+		// Check if the table already existed
+		if !strings.Contains(err.Error(), "Error 1050:") {
+			return 0, errors.Wrap(err, "create metaversion table")
+		}
+		created = false
 	}
 
 	var version int
 	q = `SELECT version FROM metaversion`
-	err := db.Get(&version, q)
+	err = db.Get(&version, q)
 	switch {
 	case err == sql.ErrNoRows:
-		return 0, nil
+		if !created {
+			schemaVersion = 0
+		}
+		q = `INSERT INTO metaversion (version) VALUES (?)`
+		if _, err := db.Exec(q, schemaVersion); err != nil {
+			return 0, errors.Wrap(err, "insert version")
+		}
+		return schemaVersion, nil
 	case err != nil:
 		return 0, errors.Wrap(err, "get version")
 	}

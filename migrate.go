@@ -62,7 +62,7 @@ func New(
 	if err = db.CreateMetaCheckpointsIfNotExists(); err != nil {
 		return nil, errors.Wrap(err, "create meta checkpoints table")
 	}
-	curVersion, err := db.CreateMetaVersionIfNotExists()
+	curVersion, err := db.CreateMetaVersionIfNotExists(version)
 	if err != nil {
 		return nil, errors.Wrap(err, "create meta version table")
 	}
@@ -80,6 +80,7 @@ func New(
 		if err = db.UpgradeToV1(tmpMigrations); err != nil {
 			return nil, errors.Wrap(err, "upgrade to v1")
 		}
+		curVersion = 1
 	}
 
 	// If skip, then we record the migrations but do not perform them. This

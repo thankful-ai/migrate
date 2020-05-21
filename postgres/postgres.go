@@ -3,6 +3,7 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 
 	"egt.run/migrate"
 	"github.com/jmoiron/sqlx"
@@ -112,12 +113,17 @@ func (db *DB) DeleteMetaCheckpoints() error {
 	return err
 }
 
-func (db *DB) CreateMetaVersionIfNotExists() (int, error) {
-	q := `CREATE TABLE IF NOT EXISTS metaversion (
+func (db *DB) CreateMetaVersionIfNotExists(schemaVersion int) (int, error) {
+	created := true
+	q := `CREATE TABLE metaversion (
 		version INTEGER NOT NULL
 	)`
 	if _, err := db.Exec(q); err != nil {
-		return 0, errors.Wrap(err, "create metaversion table")
+		// Check if the table already existed
+		if !strings.Contains(err.Error(), "already exists") {
+			return 0, errors.Wrap(err, "create metaversion table")
+		}
+		created = false
 	}
 
 	var version int
@@ -125,7 +131,14 @@ func (db *DB) CreateMetaVersionIfNotExists() (int, error) {
 	err := db.Get(&version, q)
 	switch {
 	case err == sql.ErrNoRows:
-		return 0, nil
+		if !created {
+			schemaVersion = 0
+		}
+		q = `INSERT INTO metaversion (version) VALUES ($1)`
+		if _, err := db.Exec(q, schemaVersion); err != nil {
+			return 0, errors.Wrap(err, "insert version")
+		}
+		return schemaVersion, nil
 	case err != nil:
 		return 0, errors.Wrap(err, "get version")
 	}

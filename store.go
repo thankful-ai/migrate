@@ -9,7 +9,7 @@ type Store interface {
 	Exec(string, ...interface{}) (sql.Result, error)
 
 	// CreateMetaversionIfNotExists and report the current version.
-	CreateMetaVersionIfNotExists() (int, error)
+	CreateMetaVersionIfNotExists(schemaVersion int) (int, error)
 	CreateMetaIfNotExists() error
 	CreateMetaCheckpointsIfNotExists() error
 
