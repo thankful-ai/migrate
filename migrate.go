@@ -86,7 +86,7 @@ func New(
 	// If skip, then we record the migrations but do not perform them. This
 	// enables you to start using this package on an existing database
 	if skip != "" {
-		m.idx, err = m.skip(skip)
+		m.idx, err = m.Skip(skip)
 		if err != nil {
 			return nil, errors.Wrap(err, "skip ahead")
 		}
@@ -246,7 +246,7 @@ func (m *Migrate) migrateFile(filename string) error {
 	return nil
 }
 
-func (m *Migrate) skip(toFile string) (int, error) {
+func (m *Migrate) Skip(toFile string) (int, error) {
 	// Get just the filename if skip is a directory
 	_, toFile = filepath.Split(toFile)
 
