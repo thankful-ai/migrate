@@ -271,6 +271,30 @@ func newTLSConfig(
 			RootCAs:      rootCertPool,
 			Certificates: clientCert,
 			ServerName:   serverName,
+
+			// This is taken from
+			// https://github.com/golang/go/issues/40748#issuecomment-673612108
+			// as a workaround from Google issuing invalid TLS
+			// certs in Cloud SQL.
+			//
+			// Set InsecureSkipVerify to skip the default validation we are
+			// replacing. This will not disable VerifyConnection.
+			InsecureSkipVerify: true,
+			VerifyConnection: func(cs tls.ConnectionState) error {
+				commonName := cs.PeerCertificates[0].Subject.CommonName
+				if commonName != cs.ServerName {
+					return fmt.Errorf("invalid certificate name %q, expected %q", commonName, cs.ServerName)
+				}
+				opts := x509.VerifyOptions{
+					Roots:         rootCertPool,
+					Intermediates: x509.NewCertPool(),
+				}
+				for _, cert := range cs.PeerCertificates[1:] {
+					opts.Intermediates.AddCert(cert)
+				}
+				_, err := cs.PeerCertificates[0].Verify(opts)
+				return err
+			},
 		},
 	}
 	return conf, nil
