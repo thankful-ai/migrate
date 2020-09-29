@@ -19,6 +19,8 @@ import (
 // version of the migrate tool's database schema.
 const version = 1
 
+var spaces = regexp.MustCompile(`\s+`)
+
 type Migrate struct {
 	Migrations []Migration
 	Files      []os.FileInfo
@@ -211,6 +213,16 @@ func (m *Migrate) migrateFile(filename string) error {
 			}
 			continue
 		}
+
+		// Print the commands we're executing to give progress updates
+		// on large migrations
+		shortCmd := cmd
+		shortCmd = strings.ReplaceAll(shortCmd, "\n", " ")
+		shortCmd = spaces.ReplaceAllString(shortCmd, " ")
+		if len(shortCmd) >= 78 {
+			shortCmd = shortCmd[:74] + "..."
+		}
+		m.log.Println(">", shortCmd)
 
 		// Execute non-checkpointed commands one by one
 		_, err := m.db.Exec(cmd)
