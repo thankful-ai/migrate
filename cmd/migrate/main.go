@@ -39,7 +39,7 @@ func run() error {
 	flag.Parse()
 
 	if *version {
-		fmt.Println("v1.0.0rc3")
+		fmt.Println("v1.0.0rc4")
 		return nil
 	}
 
