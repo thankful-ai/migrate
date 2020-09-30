@@ -27,7 +27,7 @@ func run() error {
 	dbUser := flag.String("u", "", "database user")
 	dbHost := flag.String("h", "127.0.0.1", "database host")
 	dbPort := flag.Int("p", 0, "database port")
-	dbType := flag.String("t", "mysql", "type of database (mysql, postgres, sqlite)")
+	dbType := flag.String("t", "mysql", "type of database (mysql, mariadb, postgres, sqlite)")
 	dry := flag.Bool("d", false, "dry run")
 	sslKey := flag.String("ssl-key", "", "path to client key pem")
 	sslCert := flag.String("ssl-cert", "", "path to client cert pem")
@@ -93,7 +93,7 @@ func run() error {
 		if *dbPort == 0 {
 			*dbPort = 5432
 		}
-	case "mysql":
+	case "mysql", "mariadb":
 		if *dbUser == "" {
 			*dbUser = "root"
 		}
@@ -123,7 +123,7 @@ func run() error {
 	// Prepare our database-specific configs
 	var db migrate.Store
 	switch *dbType {
-	case "mysql":
+	case "mysql", "mariadb":
 		var err error
 		db, err = mysql.New(*dbUser, string(password), *dbHost,
 			*dbName, *dbPort, *sslKey, *sslCert, *sslCA,
@@ -146,8 +146,23 @@ func run() error {
 		return errors.Wrap(err, "open")
 	}
 
+	var dbt migrate.DBType
+	switch *dbType {
+	case "mysql":
+		dbt = migrate.DBTypeMySQL
+	case "mariadb":
+		dbt = migrate.DBTypeMariaDB
+	case "postgres":
+		dbt = migrate.DBTypePostgres
+	case "sqlite":
+		dbt = migrate.DBTypeSQLite
+	default:
+		return fmt.Errorf("unknown db type: %s", *dbType)
+	}
+
 	// Prepare our database for migrations and collect the relevant files.
-	m, err := migrate.New(db, migrate.StdLogger{}, *migrationDir, *skip)
+	m, err := migrate.New(db, migrate.StdLogger{}, dbt, *migrationDir,
+		*skip)
 	if err != nil {
 		return err
 	}
@@ -157,7 +172,7 @@ func run() error {
 			return nil
 		}
 		for i := len(m.Migrations); i < len(m.Files); i++ {
-			fmt.Println("would migrate", m.Files[i].Name())
+			fmt.Println("would migrate", m.Files[i].Info.Name())
 		}
 		return nil
 	}
