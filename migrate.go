@@ -164,7 +164,6 @@ func (m *Migrate) validHistory() error {
 				m.Files[i].Info.Name(), mg.Filename)
 			return errors.New("failed to migrate. migrations must be appended")
 		}
-		fmt.Println("MIGRATION", mg.fullpath)
 		if err := m.checkHash(mg); err != nil {
 			return errors.Wrap(err, "check hash")
 		}
