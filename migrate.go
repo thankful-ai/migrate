@@ -197,6 +197,34 @@ func (m *Migrate) migrateFile(fi *file) error {
 
 	// Split commands and remove comments at the start of lines
 	cmds := strings.Split(string(byt), ";")
+
+	// For postgresql specifically, some statements may have multiple `;`
+	// such as when creating functions. Join those together.
+	newCmds := []string{}
+	var keepGoing bool
+	for _, c := range cmds {
+		lowC := strings.ToLower(c)
+		if strings.Contains(lowC, "returns trigger as") {
+			keepGoing = true
+			newCmds = append(newCmds, c+";")
+			continue
+		}
+		if keepGoing {
+			newCmds[len(newCmds)-1] += c
+			if !strings.Contains(lowC, "plpgsql") {
+				newCmds[len(newCmds)-1] += ";"
+				continue
+			}
+			keepGoing = false
+			continue
+		}
+		newCmds = append(newCmds, c)
+	}
+	if keepGoing {
+		return errors.New("unexpected exit, missing 'plpgsql'")
+	}
+	cmds = newCmds
+
 	filteredCmds := []string{}
 	for _, cmd := range cmds {
 		cmd = strings.TrimSpace(cmd)
