@@ -55,6 +55,7 @@ func (db *DB) CreateMetaCheckpointsIfNotExists() error {
 		filename TEXT NOT NULL,
 		idx INTEGER NOT NULL,
 		md5 TEXT NOT NULL,
+		content TEXT NOT NULL,
 		createdat TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
 		PRIMARY KEY (filename, idx)
 	)`
