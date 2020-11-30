@@ -87,7 +87,7 @@ func New(
 	// Migrate the database schema to match the tool's expectations
 	// automatically
 	if curVersion > version {
-		return nil, errors.New("must upgrade migrate: go get -u egt.run/migrate")
+		return nil, errors.New("must upgrade migrate: go get -u github.com/thankful-ai/migrate")
 	}
 	if curVersion < 1 {
 		tmpMigrations, err := migrationsFromFiles(m)

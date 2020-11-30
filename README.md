@@ -35,7 +35,7 @@ you forward in history, and consistency can always be reached.
 ## Install
 
 ```
-go get egt.run/migrate/cmd/migrate
+go get github.com/thankful-ai/migrate/cmd/migrate
 ```
 
 The current version is v1, and the API is stable.
@@ -81,3 +81,10 @@ The following features are not available yet but will be added:
 
 * **Comments:** Currently there's minimal support for comments in the migration
   files. Comments must be at the start of lines.
+
+## Running Tests
+
+To run the tests, first ensure that you have Postgres, MySQL (or MariaDB), and
+SQLite3 installed. Then copy test.env.example to test.env and replace the fake
+values with appropriate values for your local databases. Once this is ready,
+you can run `go test ./...`.

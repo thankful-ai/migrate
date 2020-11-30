@@ -6,10 +6,10 @@ import (
 	"os"
 	"syscall"
 
-	"egt.run/migrate"
-	"egt.run/migrate/mysql"
-	"egt.run/migrate/postgres"
-	"egt.run/migrate/sqlite"
+	"github.com/thankful-ai/migrate"
+	"github.com/thankful-ai/migrate/mysql"
+	"github.com/thankful-ai/migrate/postgres"
+	"github.com/thankful-ai/migrate/sqlite"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/ssh/terminal"
 )

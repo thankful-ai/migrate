@@ -1,4 +1,4 @@
-module egt.run/migrate
+module github.com/thankful-ai/migrate
 
 require (
 	github.com/go-sql-driver/mysql v1.5.0

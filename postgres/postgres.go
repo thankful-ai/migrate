@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"egt.run/migrate"
+	"github.com/thankful-ai/migrate"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 

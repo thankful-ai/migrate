@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"egt.run/migrate"
+	"github.com/thankful-ai/migrate"
 	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"

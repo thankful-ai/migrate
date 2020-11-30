@@ -3,7 +3,7 @@ package sqlite
 import (
 	"testing"
 
-	"egt.run/migrate"
+	"github.com/thankful-ai/migrate"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
 )
