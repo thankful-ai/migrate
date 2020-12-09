@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/thankful-ai/migrate"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
+	"github.com/thankful-ai/migrate"
 
 	_ "github.com/lib/pq"
 )
@@ -145,6 +145,8 @@ func (db *DB) CreateMetaVersionIfNotExists(schemaVersion int) (int, error) {
 	}
 	return version, nil
 }
+
+func (db *DB) Close() error { return db.DB.Close() }
 
 func (db *DB) Open() error {
 	var err error

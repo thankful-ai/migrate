@@ -8,10 +8,10 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/thankful-ai/migrate"
 	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
+	"github.com/thankful-ai/migrate"
 )
 
 type DB struct {
@@ -227,6 +227,8 @@ func (db *DB) UpgradeToV1(migrations []migrate.Migration) (err error) {
 	}
 	return nil
 }
+
+func (db *DB) Close() error { return db.DB.Close() }
 
 func (db *DB) Open() error {
 	if db.tlsConfig != nil {

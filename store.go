@@ -6,6 +6,7 @@ import (
 
 type Store interface {
 	Open() error
+	Close() error
 	Exec(string, ...interface{}) (sql.Result, error)
 
 	// CreateMetaversionIfNotExists and report the current version.
