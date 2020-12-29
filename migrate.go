@@ -223,7 +223,10 @@ func Statements(byt []byte) ([]string, error) {
 	filteredCmds := []string{}
 	for _, cmd := range cmds {
 		cmd = strings.TrimSpace(cmd)
-		if len(cmd) > 0 && !strings.HasPrefix(cmd, "--") {
+		if len(cmd) == 0 {
+			continue
+		}
+		if !strings.HasPrefix(cmd, "--") && !strings.HasPrefix(cmd, "/*") {
 			filteredCmds = append(filteredCmds, cmd)
 		}
 	}
