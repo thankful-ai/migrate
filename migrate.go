@@ -189,12 +189,7 @@ func (m *Migrate) checkHash(mg Migration) error {
 	return nil
 }
 
-func (m *Migrate) migrateFile(fi *file) error {
-	byt, err := ioutil.ReadFile(fi.fullpath)
-	if err != nil {
-		return err
-	}
-
+func Statements(byt []byte) ([]string, error) {
 	// Split commands and remove comments at the start of lines
 	cmds := strings.Split(string(byt), ";")
 
@@ -221,7 +216,7 @@ func (m *Migrate) migrateFile(fi *file) error {
 		newCmds = append(newCmds, c)
 	}
 	if keepGoing {
-		return errors.New("unexpected exit, missing 'plpgsql'")
+		return nil, errors.New("unexpected exit, missing 'plpgsql'")
 	}
 	cmds = newCmds
 
@@ -232,14 +227,26 @@ func (m *Migrate) migrateFile(fi *file) error {
 			filteredCmds = append(filteredCmds, cmd)
 		}
 	}
+	return filteredCmds, nil
+}
+
+func (m *Migrate) migrateFile(f *file) error {
+	byt, err := ioutil.ReadFile(f.fullpath)
+	if err != nil {
+		return err
+	}
+	filteredCmds, err := Statements(byt)
+	if err != nil {
+		return fmt.Errorf("statements: %w", err)
+	}
 
 	// Ensure that commands are present
 	if len(filteredCmds) == 0 {
-		return fmt.Errorf("no sql statements in file: %s", fi.Info.Name())
+		return fmt.Errorf("no sql statements in file: %s", f.Info.Name())
 	}
 
 	// Get our checkpoints, if any
-	checkpoints, err := m.db.GetMetaCheckpoints(fi.Info.Name())
+	checkpoints, err := m.db.GetMetaCheckpoints(f.Info.Name())
 	if err != nil {
 		return errors.Wrap(err, "get checkpoints")
 	}
@@ -264,7 +271,7 @@ func (m *Migrate) migrateFile(fi *file) error {
 			if checksum != checkpoints[i] {
 				return fmt.Errorf(
 					"checksum does not equal checkpoint. has %s (cmd %d) changed?",
-					fi.Info.Name(), i)
+					f.Info.Name(), i)
 			}
 			continue
 		}
@@ -283,7 +290,7 @@ func (m *Migrate) migrateFile(fi *file) error {
 		_, err := m.db.Exec(cmd)
 		if err != nil {
 			m.log.Println("failed on", cmd)
-			return fmt.Errorf("%s: %s", fi.Info.Name(), err)
+			return fmt.Errorf("%s: %s", f.Info.Name(), err)
 		}
 
 		// Save a checkpoint
@@ -291,7 +298,7 @@ func (m *Migrate) migrateFile(fi *file) error {
 		if err != nil {
 			return errors.Wrap(err, "compute checksum")
 		}
-		err = m.db.InsertMetaCheckpoint(fi.Info.Name(), cmd, checksum, i)
+		err = m.db.InsertMetaCheckpoint(f.Info.Name(), cmd, checksum, i)
 		if err != nil {
 			return errors.Wrap(err, "insert checkpoint")
 		}
@@ -307,7 +314,7 @@ func (m *Migrate) migrateFile(fi *file) error {
 	if err != nil {
 		return errors.Wrap(err, "compute file checksum")
 	}
-	err = m.db.InsertMigration(fi.Info.Name(), string(byt), checksum)
+	err = m.db.InsertMigration(f.Info.Name(), string(byt), checksum)
 	if err != nil {
 		return errors.Wrap(err, "insert migration")
 	}
