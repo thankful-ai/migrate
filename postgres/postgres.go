@@ -31,7 +31,7 @@ func New(
 		url += "sslmode=disable"
 	} else {
 		url += fmt.Sprintf(
-			"sslmode=verify-full sslkey=%s sslcert=%s sslrootcert=%s",
+			"sslmode=verify-ca sslkey=%s sslcert=%s sslrootcert=%s",
 			sslKey, sslCert, sslCA)
 	}
 	return &DB{connURL: url}
