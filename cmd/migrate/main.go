@@ -6,11 +6,11 @@ import (
 	"os"
 	"syscall"
 
+	"github.com/pkg/errors"
 	"github.com/thankful-ai/migrate"
 	"github.com/thankful-ai/migrate/mysql"
 	"github.com/thankful-ai/migrate/postgres"
 	"github.com/thankful-ai/migrate/sqlite"
-	"github.com/pkg/errors"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -39,7 +39,7 @@ func run() error {
 	flag.Parse()
 
 	if *version {
-		fmt.Println("v1.0.0rc4")
+		fmt.Println("v1.0.0rc5")
 		return nil
 	}
 
@@ -84,9 +84,6 @@ func run() error {
 			return errors.New("sqlite does not support ssl")
 		}
 	case "postgres":
-		if *sslServerName != "" {
-			return errors.New("postgres does not support the -ssl-server flag")
-		}
 		if *dbUser == "" {
 			*dbUser = "postgres"
 		}
