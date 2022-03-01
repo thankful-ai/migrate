@@ -199,7 +199,7 @@ func Statements(byt []byte) ([]string, error) {
 	var keepGoing bool
 	for _, c := range cmds {
 		lowC := strings.ToLower(c)
-		if strings.Contains(lowC, "returns trigger as") {
+		if strings.Contains(lowC, "returns trigger as") || strings.Contains(lowC, "returns void as") {
 			keepGoing = true
 			newCmds = append(newCmds, c+";")
 			continue
