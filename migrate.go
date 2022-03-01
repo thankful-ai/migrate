@@ -12,6 +12,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/pkg/errors"
 )
@@ -396,12 +397,19 @@ func readDir(dir string, dbt DBType) ([]*file, error) {
 	for _, fi := range tmp {
 		fullpath := filepath.Join(dir, fi.Name())
 
-		// Skip directories and hidden files
-		if fi.IsDir() || strings.HasPrefix(fi.Name(), ".") {
+		// Skip directories.
+		if fi.IsDir() {
 			continue
 		}
-		// Skip any non-sql files
+
+		// Skip any non-sql files.
 		if filepath.Ext(fi.Name()) != ".sql" {
+			continue
+		}
+
+		// Skip any files which aren't prefixed by a number, including
+		// hidden files.
+		if !unicode.IsDigit(rune(fi.Name()[0])) {
 			continue
 		}
 		files = append(files, &file{Info: fi, fullpath: fullpath})
