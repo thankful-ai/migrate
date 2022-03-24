@@ -20,7 +20,10 @@ import (
 // version of the migrate tool's database schema.
 const version = 1
 
-var spaces = regexp.MustCompile(`\s+`)
+var (
+	spaces    = regexp.MustCompile(`\s+`)
+	fnReturns = regexp.MustCompile(`returns \w+ as`)
+)
 
 type Migrate struct {
 	Migrations []Migration
@@ -200,7 +203,8 @@ func Statements(byt []byte) ([]string, error) {
 	var keepGoing bool
 	for _, c := range cmds {
 		lowC := strings.ToLower(c)
-		if strings.Contains(lowC, "returns trigger as") || strings.Contains(lowC, "returns void as") {
+
+		if fnReturns.MatchString(lowC) {
 			keepGoing = true
 			newCmds = append(newCmds, c+";")
 			continue
