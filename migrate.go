@@ -22,7 +22,7 @@ const version = 1
 
 var (
 	spaces    = regexp.MustCompile(`\s+`)
-	fnReturns = regexp.MustCompile(`returns \w+ as`)
+	fnReturns = regexp.MustCompile(`returns [\w\[\]]+ as`)
 )
 
 type Migrate struct {
