@@ -19,13 +19,13 @@ RUN --mount=type=bind,source=go.mod,target=/go/src/app/go.mod,readonly \
   --mount=type=cache,target=${GOCACHE} \
   --mount=type=cache,target=${GOMODCACHE} \
   --mount=type=cache,target=/go/pkg \
-  go mod download -x -json
+  go mod download -x
 
 RUN --mount=type=bind,source=.,target=/go/src/app,readonly \
   --mount=type=cache,target=${GOCACHE} \
   --mount=type=cache,target=${GOMODCACHE} \
   --mount=type=cache,target=/go/pkg \
-  go build -a -ldflags="-w -s" -o /go/bin/app ./cmd/migrate
+  go build -x -a -ldflags="-w -s" -trimpath -o /go/bin/app ./cmd/migrate
 
 FROM gcr.io/distroless/static-debian12 AS main
 COPY --from=build /go/bin/app /migrate
