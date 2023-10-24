@@ -2,11 +2,11 @@ name: Build Push Image
 
 on:
   pull_request:
-    branches:
-      - master
+    branches: [master]
   push:
-    branches:
-      - master
+    branches: [master]
+  release:
+    types: [published]
 
 permissions:
   contents: read
