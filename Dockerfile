@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM tonistiigi/xx:1.3.0 AS cross-compile
+FROM --platform=$BUILDPLATFORM tonistiigi/xx:1.4.0 AS cross-compile
 FROM --platform=$BUILDPLATFORM golang:1.22-alpine AS build
 
 RUN apk add --update clang lld
