@@ -5,7 +5,7 @@ import (
 	"crypto/x509"
 	"database/sql"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/go-sql-driver/mysql"
@@ -31,6 +31,16 @@ func New(
 	db.connURL = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true", user,
 		pass, host, port, dbName)
 	if sslKey != "" {
+		if sslServerName == "" {
+			return nil, errors.New("ssl server name required if ssl key is provided")
+		}
+		if sslCert == "" {
+			return nil, errors.New("client ssl cert is required if ssl key is provided")
+		}
+		if sslCA == "" {
+			return nil, errors.New("server ca cert is required if ssl key is provided")
+		}
+
 		db.connURL = fmt.Sprintf("%s&tls=%s", db.connURL, sslServerName)
 		var err error
 		db.tlsConfig, err = newTLSConfig(dbName, sslKey,
@@ -255,7 +265,7 @@ func newTLSConfig(
 	dbName, keyPath, certPath, caPath, serverName string,
 ) (*tlsConfig, error) {
 	rootCertPool := x509.NewCertPool()
-	pem, err := ioutil.ReadFile(caPath)
+	pem, err := os.ReadFile(caPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "read sql server cert file")
 	}

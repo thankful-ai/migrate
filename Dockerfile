@@ -1,5 +1,5 @@
 FROM --platform=$BUILDPLATFORM tonistiigi/xx:1.3.0 AS cross-compile
-FROM --platform=$BUILDPLATFORM golang:1.21-alpine AS build
+FROM --platform=$BUILDPLATFORM golang:1.22-alpine AS build
 
 RUN apk add --update clang lld
 ARG TARGETOS
@@ -32,7 +32,7 @@ RUN --mount=type=bind,source=.,target=/go/src/app,readonly \
   xx-go build -a --ldflags="-linkmode=external -extldflags='-static'" -trimpath -o /go/bin/app ./cmd/migrate \
   && xx-verify --static /go/bin/app
 
-FROM alpine:3.18 AS main
+FROM alpine:3.20 AS main
 RUN apk add --no-cache ca-certificates
 USER nobody
 COPY scripts/docker-entrypoint.sh /docker-entrypoint.sh
